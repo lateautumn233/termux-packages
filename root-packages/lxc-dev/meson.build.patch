@@ -1,0 +1,31 @@
+diff --git a/meson.build b/meson.build
+index cb6f17fa4..c331e5ba9 100644
+--- a/meson.build
++++ b/meson.build
+@@ -50,7 +50,7 @@ rootfsmount = get_option('rootfs-mount-path')
+ user_network_db_opt = get_option('usernet-db-path')
+ user_network_conf_opt = get_option('usernet-config-path')
+ 
+-bashcompletiondir = join_paths('/', 'usr', 'share', 'bash-completion', 'completions')
++bashcompletiondir = join_paths(prefixdir, 'share', 'bash-completion', 'completions')
+ bindir = join_paths(prefixdir, get_option('bindir'))
+ datadir = join_paths(prefixdir, get_option('datadir'))
+ mandir = join_paths(prefixdir, get_option('mandir'))
+@@ -357,6 +357,7 @@ if want_seccomp
+ 
+         seccomp_headers = '''
+         #include <seccomp.h>
++        #include <linux/sched.h>
+         '''
+ 
+         foreach decl: [
+@@ -582,6 +583,9 @@ decl_headers = '''
+ #include <sys/stat.h>
+ #include <linux/if_link.h>
+ #include <linux/types.h>
++#include <linux/sched.h>
++#include <linux/openat2.h>
++
+ '''
+ 
+ foreach decl: [

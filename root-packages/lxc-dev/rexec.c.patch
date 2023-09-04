@@ -1,0 +1,36 @@
+diff --git a/src/lxc/rexec.c b/src/lxc/rexec.c
+index 6a017da9c..d5fc998e8 100644
+--- a/src/lxc/rexec.c
++++ b/src/lxc/rexec.c
+@@ -23,6 +23,31 @@
+ #define LXC_MEMFD_REXEC_SEALS \
+ 	(F_SEAL_SEAL | F_SEAL_SHRINK | F_SEAL_GROW | F_SEAL_WRITE)
+ 
++int fexecve (int fd, char *const argv[], char *const envp[])
++{
++  if (fd < 0 || argv == NULL || envp == NULL)
++    {
++      errno = EINVAL;
++      return -1;
++    }
++
++  char buf[sizeof "/proc/self/fd/" + sizeof (int) * 3];
++  snprintf(buf, sizeof (buf), "/proc/self/fd/%d", fd);
++
++  execve(buf, argv, envp);
++
++  int save = errno;
++
++  struct stat st;
++  if (stat("/proc/self/fd", &st) != 0 && errno == ENOENT)
++    save = ENOSYS;
++
++  errno = save;
++
++  return -1;
++}
++
++
+ static int push_vargs(char *data, int data_length, char ***output)
+ {
+ 	int num = 0;

@@ -1,0 +1,13 @@
+diff --git a/src/lxc/tools/lxc_copy.c b/src/lxc/tools/lxc_copy.c
+index bc2e1db7d..fddf6f9a8 100644
+--- a/src/lxc/tools/lxc_copy.c
++++ b/src/lxc/tools/lxc_copy.c
+@@ -25,7 +25,7 @@
+ #include "utils.h"
+ 
+ #if !HAVE_GETSUBOPT
+-#include "include/getsubopt.h"
++#include "include/getsubopt.c"
+ #endif
+ 
+ lxc_log_define(lxc_copy, lxc);

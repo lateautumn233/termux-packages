@@ -1,0 +1,31 @@
+diff --git a/src/lxc/conf.c b/src/lxc/conf.c
+index b900089fc..3d00e7255 100644
+--- a/src/lxc/conf.c
++++ b/src/lxc/conf.c
+@@ -284,6 +284,26 @@ static struct limit_opt limit_opt[] = {
+ #endif
+ };
+ 
++#if defined __ANDROID__ && __ANDROID_API__ < 26
++#include <dlfcn.h>
++
++char *hasmntopt(const struct mntent *__entry, const char *__option)
++{
++	static int initialized = 0;
++	static char *(*libc_impl)(const struct mntent *, const char *) = NULL;
++	if (!initialized) {
++		void *libc_handle = dlopen("libc.so", RTLD_NOW);
++		if (libc_handle != NULL)
++			libc_impl = dlsym(libc_handle, "hasmntopt");
++		initialized = 1;
++	}
++	if (libc_impl != NULL)
++		return libc_impl(__entry, __option);
++	return NULL;
++}
++#endif
++
++
+ static int run_buffer(char *buffer)
+ {
+ 	__do_free char *output = NULL;
